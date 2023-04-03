@@ -57,11 +57,6 @@ To deploy this project run
 ```
 
 
-## Feedback
-
-If you have any feedback, please reach out to us at chintanudani2000@gmail.com
-
-
 ## Installation
 
 Install my-project with pip
@@ -76,7 +71,7 @@ Install my-project with pip
 Clone the project
 
 ```bash
-  git clone https://github.com/vivek-lakhani-1/OCR_Engine
+  git clone https://github.com/manavpatel11/OCR-Engine
 ```
 
 Go to the project directory
