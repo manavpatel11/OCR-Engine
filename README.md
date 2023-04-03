@@ -26,10 +26,10 @@ The OCR and Solana for incentive project is a collaborative effort that requires
 
 ## Authors
 
+- [@Manav Patel](https://www.github.com/manavpatel11)
 - [@Vivek Lakhani](https://www.github.com/vivek-lakhani-1)
 - [@Vatsal Chauhan](https://www.github.com/Vatsal-Chauhan024)
 - [@Chintan Udani](https://www.github.com/chintan-udani)
-- [@Manav Patel](https://www.github.com/manavpatel11)
 
 ## Badges
 
