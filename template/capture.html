@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style4.css' %}">
+  <script type="text/javascript">
+    const constraints = {
+      video: true
+    };
+
+    async function getCamera() {
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const video = document.querySelector('video');
+      video.srcObject = stream;
+    }
+
+function takePicture() {
+  const canvas = document.createElement('canvas');
+  const video = document.querySelector('video');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0);
+
+  const imgData = canvas.toDataURL();
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/save-image/');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      console.log('Image saved successfully');
+    } else {
+      console.error('Failed to save image');
+    }
+  };
+  xhr.send(`image_data=${encodeURIComponent(imgData)}`);
+  document.getElementById("myButton").addEventListener("click", function() {
+  window.location.href = "/cimg";
+  });
+
+  document.getElementById("myButton").click();
+
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + '=') {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+
+    getCamera();
+  </script>
+
+</head>
+<body>
+    <button id="myButton" style="display: none;">Click me</button>
+  <center><video  class="video" autoplay></video></center>
+  <button class="btn"  onclick="takePicture()">Take Picture</button>
+</body>
+</html>
